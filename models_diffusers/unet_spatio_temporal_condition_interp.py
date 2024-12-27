@@ -26,9 +26,7 @@ from typing import Any, Callable, List, Optional, Tuple, Union
 from diffusers import __version__
 from diffusers.utils import (
     CONFIG_NAME,
-    DIFFUSERS_CACHE,
     FLAX_WEIGHTS_NAME,
-    HF_HUB_OFFLINE,
     MIN_PEFT_VERSION,
     SAFETENSORS_WEIGHTS_NAME,
     WEIGHTS_NAME,
@@ -40,8 +38,11 @@ from diffusers.utils import (
     is_torch_version,
     logging,
 )
+from huggingface_hub.constants import HF_HUB_OFFLINE, HF_HOME
 from diffusers.utils.hub_utils import PushToHubMixin
 from diffusers.models.modeling_utils import load_model_dict_into_meta, load_state_dict
+
+DIFFUSERS_CACHE = os.path.join(HF_HOME, "diffusers")
 
 if is_torch_version(">=", "1.9.0"):
     _LOW_CPU_MEM_USAGE_DEFAULT = True
@@ -860,7 +861,7 @@ class UNetSpatioTemporalConditionModel(ModelMixin, ConfigMixin, UNet2DConditionL
             return_unused_kwargs=True,
             return_commit_hash=True,
             force_download=force_download,
-            resume_download=resume_download,
+            # resume_download=resume_download,
             proxies=proxies,
             local_files_only=local_files_only,
             use_auth_token=use_auth_token,
@@ -886,7 +887,7 @@ class UNetSpatioTemporalConditionModel(ModelMixin, ConfigMixin, UNet2DConditionL
                 weights_name=FLAX_WEIGHTS_NAME,
                 cache_dir=cache_dir,
                 force_download=force_download,
-                resume_download=resume_download,
+                # resume_download=resume_download,
                 proxies=proxies,
                 local_files_only=local_files_only,
                 use_auth_token=use_auth_token,
@@ -909,7 +910,7 @@ class UNetSpatioTemporalConditionModel(ModelMixin, ConfigMixin, UNet2DConditionL
                         weights_name=_add_variant(SAFETENSORS_WEIGHTS_NAME, variant),
                         cache_dir=cache_dir,
                         force_download=force_download,
-                        resume_download=resume_download,
+                        # resume_download=resume_download,
                         proxies=proxies,
                         local_files_only=local_files_only,
                         use_auth_token=use_auth_token,
@@ -928,7 +929,7 @@ class UNetSpatioTemporalConditionModel(ModelMixin, ConfigMixin, UNet2DConditionL
                     weights_name=_add_variant(WEIGHTS_NAME, variant),
                     cache_dir=cache_dir,
                     force_download=force_download,
-                    resume_download=resume_download,
+                    # resume_download=resume_download,
                     proxies=proxies,
                     local_files_only=local_files_only,
                     use_auth_token=use_auth_token,

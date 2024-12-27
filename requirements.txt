@@ -1,6 +1,5 @@
-diffusers==0.24.0
-huggingface_hub==0.25.2
-
+diffusers
+huggingface_hub
 Pillow
 accelerate
 omegaconf
