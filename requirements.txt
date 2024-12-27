@@ -1,0 +1,11 @@
+diffusers==0.24.0
+huggingface_hub==0.25.2
+
+Pillow
+accelerate
+omegaconf
+opencv-python
+einops
+kornia
+
+git+https://github.com/XPixelGroup/BasicSR.git
