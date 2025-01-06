@@ -33,7 +33,10 @@ python install.py
 
 **Otherwise they will be automatically downloaded when the LoadAniDoc node is used for the first time.**
 
-Manually Download the [CoTracker Checkpoint](https://huggingface.co/facebook/cotracker/blob/main/cotracker2.pth) and place it in `models/cotracker` folder to use AniDoc with tracking enabled.
+**Manual Download:**
+- Download Stable Diffusion Video Img2Vid from [here](https://huggingface.co/stabilityai/stable-video-diffusion-img2vid-xt-1-1/tree/main) and put everything in `models/diffusers/stable-video-diffusion-img2vid-xt-1-1`
+- Download AniDoc from [here](https://huggingface.co/Yhmeng1106/anidoc/tree/main/anidoc) and put everything in `models/diffusers/anidoc`
+- Download the [CoTracker Checkpoint](https://huggingface.co/facebook/cotracker/blob/main/cotracker2.pth) and place it in `models/cotracker` folder to use AniDoc with tracking enabled.
 
 The nodes can be found in "AniDoc" category as `AniDocLoader`, `LoadCoTracker`, `GetAniDocControlnetImages`, `AniDocSampler`.
 
