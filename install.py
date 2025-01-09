@@ -4,14 +4,17 @@ import logging
 import subprocess
 import traceback
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+EXT_PATH = os.path.dirname(os.path.abspath(__file__))
+
+sys.path.insert(0, EXT_PATH)
 
 log = logging.getLogger("AniDoc")
 
 download_models = True
 
 try:
-    folder_paths_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'folder_paths.py'))
+    folder_paths_path = os.path.abspath(os.path.join(os.path.dirname(EXT_PATH), "..", "..", "folder_paths.py"))
+
     sys.path.append(os.path.dirname(folder_paths_path))
 
     import folder_paths
@@ -24,8 +27,6 @@ try:
     )
 except:
     download_models = False
-
-EXT_PATH = os.path.dirname(os.path.abspath(__file__))
 
 COTRACKER = os.path.join(EXT_PATH, "cotracker")
     
