@@ -11,7 +11,11 @@ log = logging.getLogger("AniDoc")
 download_models = True
 
 try:
+    folder_paths_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'folder_paths.py'))
+    sys.path.append(os.path.dirname(folder_paths_path))
+
     import folder_paths
+    
     DIFFUSERS_DIR = os.path.join(folder_paths.models_dir, "diffusers")
     ANIDOC_DIR = os.path.join(DIFFUSERS_DIR, "anidoc")
     SVD_I2V_DIR = os.path.join(
@@ -20,7 +24,6 @@ try:
     )
 except:
     download_models = False
-    log.info("Not called by ComfyUI Manager. Models will not be downloaded")
 
 EXT_PATH = os.path.dirname(os.path.abspath(__file__))
 
