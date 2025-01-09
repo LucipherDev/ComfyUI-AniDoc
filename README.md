@@ -29,9 +29,9 @@ python install.py
 
 ## Usage
 
-**If you installed from the ComfyUI-Manager, all the necessary models should be automatically downloaded into the `models/diffusers` folder.**
+**All the necessary models should be automatically downloaded when the LoadAniDoc node is used for the first time.**
 
-**Otherwise they will be automatically downloaded when the LoadAniDoc node is used for the first time.**
+**Models can also be downloaded using the `install.py` script**
 
 **Manual Download:**
 - Download Stable Diffusion Video Img2Vid from [here](https://huggingface.co/stabilityai/stable-video-diffusion-img2vid-xt-1-1/tree/main) and put everything in `models/diffusers/stable-video-diffusion-img2vid-xt-1-1`
