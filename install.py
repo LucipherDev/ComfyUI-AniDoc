@@ -31,47 +31,48 @@ except:
 COTRACKER = os.path.join(EXT_PATH, "cotracker")
     
 try:
-    log.info(f"Installing requirements")
+    log.info("Installing requirements")
     subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", f"{EXT_PATH}/requirements.txt", "--no-warn-script-location"])
     
     if download_models:
         from huggingface_hub import snapshot_download
+        
+        log.info("Downloading Necessary models")
 
         try:
-            if not os.path.exists(ANIDOC_DIR):
-                log.info(f"Downloading AniDoc model to: {ANIDOC_DIR}")
-                snapshot_download(
-                    repo_id="Yhmeng1106/anidoc",
-                    local_dir=DIFFUSERS_DIR,
-                    local_dir_use_symlinks=False,
-                )
+            log.info(f"Downloading AniDoc model to: {ANIDOC_DIR}")
+            snapshot_download(
+                repo_id="Yhmeng1106/anidoc",
+                ignore_patterns=["*.md"],
+                local_dir=DIFFUSERS_DIR,
+                local_dir_use_symlinks=False,
+            )
         except Exception:
             traceback.print_exc()
-            log.error(f"Failed to download AniDoc model")
+            log.error("Failed to download AniDoc model")
             
         try:
-            if not os.path.exists(SVD_I2V_DIR):
-                log.info(f"Downloading stable diffusion video img2vid to: {SVD_I2V_DIR}")
-                snapshot_download(
-                    repo_id="vdo/stable-video-diffusion-img2vid-xt-1-1",
-                    allow_patterns=[f"*.json", "*fp16*"],
-                    ignore_patterns=["*unet*"],
-                    local_dir=SVD_I2V_DIR,
-                    local_dir_use_symlinks=False,
-                )
+            log.info(f"Downloading stable diffusion video img2vid to: {SVD_I2V_DIR}")
+            snapshot_download(
+                repo_id="vdo/stable-video-diffusion-img2vid-xt-1-1",
+                allow_patterns=["*.json", "*fp16*"],
+                ignore_patterns=["*unet*"],
+                local_dir=SVD_I2V_DIR,
+                local_dir_use_symlinks=False,
+            )
         except Exception:
             traceback.print_exc()
-            log.error(f"Failed to download stable diffusion video img2vid")
+            log.error("Failed to download stable diffusion video img2vid")
     
     try:
         log.info("Installing CoTracker")
         subprocess.check_call([sys.executable, "-m", "pip", "install", COTRACKER])
     except Exception:
         traceback.print_exc()
-        log.error(f"Failed to install CoTracker")
+        log.error("Failed to install CoTracker")
     
-    log.info(f"AniDoc Installation completed")
+    log.info("AniDoc Installation completed")
         
 except Exception:
     traceback.print_exc()
-    log.error(f"AniDoc Installation failed")
+    log.error("AniDoc Installation failed")

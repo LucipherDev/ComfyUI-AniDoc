@@ -1,7 +1,7 @@
 [project]
 name = "comfyui-anidoc"
 description = "ComfyUI Custom Nodes for 'AniDoc: Animation Creation Made Easier'. This approach automates line art video colorization using a novel model that aligns color information from references, ensures temporal consistency, and reduces manual effort in animation production."
-version = "1.0.4"
+version = "1.0.5"
 license = {file = "LICENSE"}
 dependencies = ["diffusers", "huggingface_hub", "Pillow", "accelerate", "omegaconf", "opencv-python", "einops", "kornia", "git+https://github.com/XPixelGroup/BasicSR.git"]
 

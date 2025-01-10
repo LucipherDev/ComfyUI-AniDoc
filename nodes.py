@@ -14,10 +14,15 @@ import torchvision.transforms as T
 from LightGlue.lightglue import LightGlue, SuperPoint
 from LightGlue.lightglue.utils import rbd
 
-from models_diffusers.unet_spatio_temporal_condition import UNetSpatioTemporalConditionModel
+from models_diffusers.unet_spatio_temporal_condition import (
+    UNetSpatioTemporalConditionModel,
+)
 from models_diffusers.controlnet_svd import ControlNetSVDModel
 
-from cotracker.predictor import CoTrackerPredictor, sample_trajectories_with_ref
+try:
+    from cotracker.predictor import CoTrackerPredictor, sample_trajectories_with_ref
+except:
+    pass
 
 from lineart_extractor.canny import CannyDetector
 from lineart_extractor.hed import HEDdetector
@@ -50,6 +55,7 @@ folder_paths.folder_names_and_paths["cotracker"] = (
     folder_paths.supported_pt_extensions,
 )
 
+
 class AniDocLoader:
     @classmethod
     def INPUT_TYPES(cls):
@@ -80,17 +86,20 @@ class AniDocLoader:
         if self.pipeline is None:
             pbar = ProgressBar(5)
 
-            if not os.path.exists(anidoc_path):
-                log.info(f"Downloading AniDoc model to: {anidoc_path}")
-                snapshot_download(
-                    repo_id="Yhmeng1106/anidoc",
-                    local_dir=DIFFUSERS_DIR,
-                    local_dir_use_symlinks=False,
-                )
-
             pbar.update(1)
 
             log.info(f"Loading model from: {anidoc_path}")
+            log.info("Missing models will be downloaded")
+
+            try:
+                snapshot_download(
+                    repo_id="Yhmeng1106/anidoc",
+                    ignore_patterns=["*.md"],
+                    local_dir=DIFFUSERS_DIR,
+                    local_dir_use_symlinks=False,
+                )
+            except:
+                log.info("Couldn't download models")
 
             unet = UNetSpatioTemporalConditionModel.from_pretrained(
                 anidoc_path,
@@ -111,22 +120,24 @@ class AniDocLoader:
             pbar.update(1)
 
             if XFORMERS_IS_AVAILABLE:
-                log.info(f"Enabling XFormers")
+                log.info("Enabling XFormers")
                 unet.enable_xformers_memory_efficient_attention()
 
-            if not os.path.exists(svd_img2vid_path):
-                log.info(f"Downloading stable diffusion video img2vid to: {svd_img2vid_path}")
+            log.info(f"Loading model from: {svd_img2vid_path}")
+            log.info("Missing models will be downloaded")
+
+            try:
                 snapshot_download(
                     repo_id="vdo/stable-video-diffusion-img2vid-xt-1-1",
-                    allow_patterns=[f"*.json", "*fp16*"],
+                    allow_patterns=["*.json", "*fp16*"],
                     ignore_patterns=["*unet*"],
                     local_dir=svd_img2vid_path,
                     local_dir_use_symlinks=False,
                 )
+            except:
+                log.info("Couldn't download models")
 
             pbar.update(1)
-
-            log.info(f"Loading model from: {svd_img2vid_path}")
 
             pipeline = AniDocPipeline.from_pretrained(
                 svd_img2vid_path,
@@ -190,6 +201,11 @@ class LoadAniDocCoTracker:
         device="cuda",
         dtype=torch.float32,
     ):
+        try:
+            import cotracker
+        except:
+            raise ImportError("Couldn't import cotracker module. Please install it to use this node")
+        
         if tracking:
             if self.tracker is None or self.tracker_shift_grid != tracker_shift_grid:
                 cotracker_model_path = folder_paths.get_full_path(
@@ -278,7 +294,7 @@ class GetAniDocControlnetImages:
             return cv2.bitwise_not(image)
         else:
             return 255 - image
-        
+
     def get_controlnet_images(
         self,
         input_images,
@@ -295,7 +311,7 @@ class GetAniDocControlnetImages:
 
         pbar.update(1)
 
-        log.info(f"Processing images with lineart detector")
+        log.info("Processing images with lineart detector")
 
         controlnet_images = []
 
@@ -307,7 +323,7 @@ class GetAniDocControlnetImages:
                     sketch = detector(sketch, 100, 200)
                 else:
                     sketch = detector(sketch)
-                    
+
                 if lineart_detector in ["canny", "hed"]:
                     sketch = self.invert_images(sketch)
 
@@ -689,7 +705,9 @@ class AniDocSampler:
                 noise_aug_strength=noise_aug,
                 decode_chunk_size=decode_chunk_size,
                 generator=generator,
-                callback_on_step_end=lambda *args, **kwargs: (pbar.update(1), kwargs)[-1],
+                callback_on_step_end=lambda *args, **kwargs: (pbar.update(1), kwargs)[
+                    -1
+                ],
             ).frames[0]
 
         tensor_frames = [T.ToTensor()(img) for img in video_frames]
